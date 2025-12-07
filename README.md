@@ -75,13 +75,16 @@ s = LehnNet_TCPSocket(key="SpecialKey123", wcs=("your-vps-ip", 38483))
 
 s.connect(("google.com", 80))
 s.sendall(b"GET / HTTP/1.1\r\nHost: www.google.com\r\nConnection: close\r\n\r\n")
-
+s.settimeout(1)
 response = b""
 while True:
-    data = s.recv(4096)
-    if not data:
+    try:
+        data = s.recv(4096)
+        if not data:
+            break
+        response += data
+    except:
         break
-    response += data
 print(response.decode(errors="ignore"))
 
 s.close()
